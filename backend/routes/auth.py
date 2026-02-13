@@ -129,7 +129,15 @@ async def google_auth(auth_request: GoogleAuthRequest):
 
 @router.get("/me")
 async def get_me(current_user: dict = Depends(get_current_user)):
-    user = await db.users.find_one({"_id": current_user["sub"]})
+    from bson import ObjectId
+    try:
+        user = await db.users.find_one({"_id": ObjectId(current_user["sub"])})
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid user ID"
+        )
+    
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
