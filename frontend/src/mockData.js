@@ -227,7 +227,7 @@ export const reviews = [
 export const features = [
   {
     title: 'Get Real Clarity',
-    description: 'Get genuine, unfiltered insights about the college you're considering. No marketing fluff, just real experiences.',
+    description: 'Get genuine, unfiltered insights about the college you are considering. No marketing fluff, just real experiences.',
     icon: 'CheckCircle2'
   },
   {
