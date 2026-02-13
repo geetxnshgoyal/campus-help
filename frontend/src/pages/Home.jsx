@@ -1,15 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../components/ui/accordion';
 import MentorCard from '../components/MentorCard';
-import { mentors, colleges, pricingPlans, faqs, features } from '../mockData';
+import { faqs, features, pricingPlans } from '../mockData';
+import { mentorAPI, collegeAPI } from '../services/api';
 import { ArrowRight, Gift, CheckCircle2, GitCompare, BookOpen, GraduationCap, Users, Briefcase, Check, Sparkles, Star, TrendingUp } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
   const [selectedCollege, setSelectedCollege] = useState('all');
+  const [mentors, setMentors] = useState([]);
+  const [colleges, setColleges] = useState([{ id: 'all', name: 'All', shortName: 'All' }]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // Fetch colleges
+      const collegesRes = await collegeAPI.getAll();
+      const collegesData = collegesRes.data.colleges.map(c => ({
+        id: c._id,
+        name: c.name,
+        shortName: c.short_name,
+        description: c.description,
+        location: c.location
+      }));
+      setColleges([{ id: 'all', name: 'All', shortName: 'All' }, ...collegesData]);
+
+      // Fetch mentors
+      const mentorsRes = await mentorAPI.getAll({ limit: 50 });
+      const mentorsData = mentorsRes.data.mentors.map(m => ({
+        id: m._id,
+        name: m.name,
+        year: m.year,
+        college: m.college_name,
+        collegeId: m.college_id,
+        rating: m.rating,
+        price: m.price,
+        image: m.profile_image,
+        bio: m.bio,
+        expertise: m.expertise,
+        languages: m.languages,
+        sessionsCompleted: m.sessions_completed
+      }));
+      setMentors(mentorsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredMentors = selectedCollege === 'all'
     ? mentors
@@ -25,7 +71,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-indigo-50/30 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-white via-indigo-50/30 to-white">'
       {/* Hero Section with Enhanced Design */}
       <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Animated background elements */}
