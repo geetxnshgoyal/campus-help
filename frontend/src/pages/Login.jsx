@@ -4,40 +4,47 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
-    // Mock login
-    localStorage.setItem('user', JSON.stringify({
-      email: formData.email,
-      name: 'Demo User',
-      role: 'student'
-    }));
-
-    toast({
-      title: 'Login Successful!',
-      description: 'Welcome back to Campus Connect'
-    });
-
-    navigate('/dashboard');
+    const result = await login(formData);
+    
+    if (result.success) {
+      toast({
+        title: 'Login Successful!',
+        description: 'Welcome back to Campus Connect'
+      });
+      navigate('/dashboard');
+    } else {
+      toast({
+        title: 'Login Failed',
+        description: result.error,
+        variant: 'destructive'
+      });
+    }
+    
+    setLoading(false);
   };
 
   const handleGoogleLogin = () => {
-    // Mock Google login
     toast({
       title: 'Google Login',
-      description: 'Google authentication will be implemented in backend'
+      description: 'Google authentication coming soon!',
     });
   };
 
