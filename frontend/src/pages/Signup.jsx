@@ -5,12 +5,15 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
-import { Mail, Lock, User, Eye, EyeOff, Phone } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Phone, Loader2 } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,7 +23,7 @@ const Signup = () => {
     role: 'student'
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -32,26 +35,30 @@ const Signup = () => {
       return;
     }
 
-    // Mock signup
-    localStorage.setItem('user', JSON.stringify({
-      name: formData.name,
-      email: formData.email,
-      role: formData.role
-    }));
-
-    toast({
-      title: 'Account created successfully!',
-      description: 'Welcome to Campus Connect'
-    });
-
-    navigate('/dashboard');
+    setLoading(true);
+    const result = await register(formData);
+    
+    if (result.success) {
+      toast({
+        title: 'Account created successfully!',
+        description: 'Welcome to Campus Connect'
+      });
+      navigate('/dashboard');
+    } else {
+      toast({
+        title: 'Registration Failed',
+        description: result.error,
+        variant: 'destructive'
+      });
+    }
+    
+    setLoading(false);
   };
 
   const handleGoogleSignup = () => {
-    // Mock Google signup
     toast({
       title: 'Google Sign Up',
-      description: 'Google authentication will be implemented in backend'
+      description: 'Google authentication coming soon!'
     });
   };
 
