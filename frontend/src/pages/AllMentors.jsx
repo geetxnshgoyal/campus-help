@@ -1,15 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import MentorCard from '../components/MentorCard';
-import { mentors, colleges } from '../mockData';
-import { Search } from 'lucide-react';
+import { mentorAPI, collegeAPI } from '../services/api';
+import { Search, Loader2 } from 'lucide-react';
 import { Input } from '../components/ui/input';
 
 const AllMentors = () => {
   const navigate = useNavigate();
   const [selectedCollege, setSelectedCollege] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [mentors, setMentors] = useState([]);
+  const [colleges, setColleges] = useState([{ id: 'all', name: 'All', shortName: 'All' }]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // Fetch colleges
+      const collegesRes = await collegeAPI.getAll();
+      const collegesData = collegesRes.data.colleges.map(c => ({
+        id: c._id,
+        name: c.name,
+        shortName: c.short_name
+      }));
+      setColleges([{ id: 'all', name: 'All', shortName: 'All' }, ...collegesData]);
+
+      // Fetch mentors
+      const mentorsRes = await mentorAPI.getAll({ limit: 100 });
+      const mentorsData = mentorsRes.data.mentors.map(m => ({
+        id: m._id,
+        name: m.name,
+        year: m.year,
+        college: m.college_name,
+        collegeId: m.college_id,
+        rating: m.rating,
+        price: m.price,
+        image: m.profile_image,
+        bio: m.bio,
+        expertise: m.expertise,
+        languages: m.languages,
+        sessionsCompleted: m.sessions_completed
+      }));
+      setMentors(mentorsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredMentors = mentors.filter(mentor => {
     const matchesCollege = selectedCollege === 'all' || mentor.collegeId === selectedCollege;
@@ -17,6 +60,17 @@ const AllMentors = () => {
                           mentor.college.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCollege && matchesSearch;
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading mentors...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
