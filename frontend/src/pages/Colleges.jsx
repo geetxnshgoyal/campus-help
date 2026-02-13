@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { colleges } from '../mockData';
-import { GraduationCap, MapPin, ArrowRight } from 'lucide-react';
+import { collegeAPI } from '../services/api';
+import { GraduationCap, MapPin, ArrowRight, Loader2 } from 'lucide-react';
 
 const Colleges = () => {
   const navigate = useNavigate();
-  const displayColleges = colleges.filter(c => c.id !== 'all');
+  const [colleges, setColleges] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchColleges();
+  }, []);
+
+  const fetchColleges = async () => {
+    try {
+      setLoading(true);
+      const response = await collegeAPI.getAll();
+      setColleges(response.data.colleges);
+    } catch (error) {
+      console.error('Error fetching colleges:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading colleges...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
