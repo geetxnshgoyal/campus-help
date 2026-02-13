@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./contexts/AuthContext";
-import Home from "./pages/Home";
+import NewHome from "./pages/NewHome";
 import AllMentors from "./pages/AllMentors";
 import MentorProfile from "./pages/MentorProfile";
 import BookSession from "./pages/BookSession";
@@ -22,7 +22,7 @@ function App() {
         <BrowserRouter>
           <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<NewHome />} />
             <Route path="/mentors" element={<AllMentors />} />
             <Route path="/mentor/:id" element={<MentorProfile />} />
             <Route path="/book/:id" element={<BookSession />} />
