@@ -1,17 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
-import { mentors, reviews } from '../mockData';
-import { Star, GraduationCap, Briefcase, Globe, MessageSquare, Calendar, Gift } from 'lucide-react';
+import { mentorAPI } from '../services/api';
+import { Star, GraduationCap, Briefcase, Globe, MessageSquare, Calendar, Gift, Loader2 } from 'lucide-react';
 
 const MentorProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const mentor = mentors.find(m => m.id === id);
-  const mentorReviews = reviews.filter(r => r.mentorId === id);
+  const [mentor, setMentor] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMentorData();
+  }, [id]);
+
+  const fetchMentorData = async () => {
+    try {
+      setLoading(true);
+      const response = await mentorAPI.getById(id);
+      const data = response.data;
+      
+      setMentor({
+        id: data.mentor._id,
+        name: data.mentor.name,
+        year: data.mentor.year,
+        college: data.mentor.college_name,
+        rating: data.mentor.rating,
+        price: data.mentor.price,
+        image: data.mentor.profile_image,
+        bio: data.mentor.bio,
+        expertise: data.mentor.expertise,
+        languages: data.mentor.languages,
+        sessionsCompleted: data.mentor.sessions_completed
+      });
+      
+      setReviews(data.reviews.map(r => ({
+        id: r._id,
+        studentName: r.student_name,
+        rating: r.rating,
+        comment: r.comment,
+        date: r.created_at
+      })));
+    } catch (error) {
+      console.error('Error fetching mentor:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading mentor profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!mentor) {
     return (
