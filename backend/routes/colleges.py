@@ -1,16 +1,15 @@
 from fastapi import APIRouter, HTTPException, status
 from models.college import College, CollegeCreate
-from motor.motor_asyncio import AsyncIOMotorClient
+from database import get_database
 from datetime import datetime
 from bson import ObjectId
-import os
+
+# Get database instance
+db = get_database()
 
 router = APIRouter(prefix="/colleges", tags=["Colleges"])
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 @router.get("", response_model=dict)
 async def get_colleges():

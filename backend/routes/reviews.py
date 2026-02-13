@@ -1,17 +1,16 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from models.review import Review, ReviewCreate, ReviewWithStudent
 from utils.auth import get_current_user
-from motor.motor_asyncio import AsyncIOMotorClient
+from database import get_database
 from datetime import datetime
 from bson import ObjectId
-import os
+
+# Get database instance
+db = get_database()
 
 router = APIRouter(prefix="/reviews", tags=["Reviews"])
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_review(

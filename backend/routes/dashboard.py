@@ -1,15 +1,14 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from utils.auth import get_current_user
-from motor.motor_asyncio import AsyncIOMotorClient
+from database import get_database
 from bson import ObjectId
-import os
+
+# Get database instance
+db = get_database()
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 @router.get("/student")
 async def get_student_dashboard(current_user: dict = Depends(get_current_user)):
