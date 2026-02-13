@@ -133,40 +133,62 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Mentors Section */}
-      <section id="mentors" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      {/* Mentors Section with Enhanced Design */}
+      <section id="mentors" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet top mentors</h2>
+            <div className="inline-block mb-4">
+              <span className="text-sm px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-semibold">
+                Top Mentors
+              </span>
+            </div>
+            <h2 className="text-5xl font-extrabold text-gray-900 mb-4">Meet top mentors</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Connect with students who are living the college experience right now. Get honest answers about what it's really like.
             </p>
           </div>
 
-          {/* College Filter */}
-          <div className="flex flex-wrap gap-3 justify-center mb-12">
+          {/* Enhanced College Filter with Chip Design */}
+          <div className="flex flex-wrap gap-3 justify-center mb-8">
             {colleges.map((college) => (
-              <Button
+              <button
                 key={college.id}
-                variant={selectedCollege === college.id ? 'default' : 'outline'}
                 onClick={() => setSelectedCollege(college.id)}
-                className={selectedCollege === college.id 
-                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
-                  : 'border-gray-300 hover:border-indigo-500'}
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
+                  selectedCollege === college.id
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-indigo-400 hover:shadow-md'
+                }`}
               >
                 {college.shortName}
-              </Button>
+              </button>
             ))}
           </div>
 
-          <p className="text-sm text-gray-600 mb-6">
-            Showing mentors from {selectedCollege === 'all' ? 'all colleges' : colleges.find(c => c.id === selectedCollege)?.name}
-          </p>
+          <div className="flex items-center justify-between mb-6">
+            <p className="text-sm text-gray-600">
+              Showing <span className="font-semibold text-gray-900">{filteredMentors.length}</span> mentor{filteredMentors.length !== 1 ? 's' : ''} from {selectedCollege === 'all' ? 'all colleges' : colleges.find(c => c.id === selectedCollege)?.name}
+            </p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedCollege('all')}
+              className={selectedCollege === 'all' ? 'hidden' : 'text-indigo-600 hover:text-indigo-700'}
+            >
+              Clear Filter
+            </Button>
+          </div>
 
-          {/* Mentor Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {filteredMentors.slice(0, 6).map((mentor) => (
-              <MentorCard key={mentor.id} mentor={mentor} />
+          {/* Mentor Grid with Stagger Animation */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {filteredMentors.slice(0, 6).map((mentor, index) => (
+              <div
+                key={mentor.id}
+                className="animate-fadeInUp"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <MentorCard mentor={mentor} />
+              </div>
             ))}
           </div>
 
@@ -175,9 +197,9 @@ const Home = () => {
               size="lg"
               variant="outline"
               onClick={() => navigate('/mentors')}
-              className="border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+              className="border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-300 px-8 py-6 text-lg"
             >
-              See All Mentors
+              See All {mentors.length} Mentors <ArrowRight className="ml-2" size={20} />
             </Button>
           </div>
         </div>
