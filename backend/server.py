@@ -1,10 +1,10 @@
 from fastapi import FastAPI, APIRouter
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
+from database import get_database, close_database
 
 # Import routes
 from routes import auth, mentors, colleges, bookings, reviews, dashboard
@@ -12,10 +12,8 @@ from routes import auth, mentors, colleges, bookings, reviews, dashboard
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Get MongoDB database instance
+db = get_database()
 
 # Create the main app without a prefix
 app = FastAPI(title="Campus Connect API", version="1.0.0")
@@ -60,6 +58,6 @@ async def startup_event():
     logger.info(f"Connected to MongoDB: {db.name}")
 
 @app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+async def shutdown_event():
+    close_database()
     logger.info("Application shutting down...")
