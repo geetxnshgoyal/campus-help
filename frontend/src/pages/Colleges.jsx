@@ -51,7 +51,7 @@ const Colleges = () => {
 
         {/* College Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayColleges.map((college) => (
+          {colleges.map((college) => (
             <Card key={college.id} className="hover:shadow-xl transition-all duration-300 overflow-hidden group">
               <CardContent className="p-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
