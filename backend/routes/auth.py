@@ -2,16 +2,12 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from models.user import UserCreate, UserLogin, User, UserInDB, GoogleAuthRequest
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 from utils.google_auth import verify_google_token
-from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
-import os
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# MongoDB will be accessed from server.py db instance
+from server import db
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate):
