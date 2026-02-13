@@ -2,12 +2,13 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from models.user import UserCreate, UserLogin, User, UserInDB, GoogleAuthRequest
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user
 from utils.google_auth import verify_google_token
+from database import get_database
 from datetime import datetime
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
-# MongoDB will be accessed from server.py db instance
-from server import db
+# Get database instance
+db = get_database()
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate):
