@@ -205,40 +205,49 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Colleges Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      {/* Colleges Section with Enhanced Cards */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-indigo-50/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-4">
-            <p className="text-sm text-indigo-600 font-semibold mb-2">Partner Institutions</p>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Explore New-Gen Colleges</h2>
+            <div className="inline-block mb-4">
+              <span className="text-sm px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-semibold">
+                Partner Institutions
+              </span>
+            </div>
+            <h2 className="text-5xl font-extrabold text-gray-900 mb-4">Explore New-Gen Colleges</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Get insider perspectives from students at India's most innovative tech institutions
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {colleges.filter(c => c.id !== 'all').slice(0, 6).map((college) => (
-              <Card key={college.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/colleges')}>
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center">
-                    <GraduationCap className="text-white" size={24} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {colleges.filter(c => c.id !== 'all').slice(0, 6).map((college, index) => (
+              <Card 
+                key={college.id} 
+                className="group hover:shadow-2xl transition-all duration-500 cursor-pointer border-2 border-transparent hover:border-indigo-200 bg-white overflow-hidden transform hover:-translate-y-2"
+                onClick={() => navigate('/colleges')}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
+                    <GraduationCap className="text-white" size={32} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{college.name}</h3>
-                  <p className="text-gray-600 mb-4">{college.description}</p>
-                  <Button variant="ghost" className="text-indigo-600 hover:text-indigo-700 p-0">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors duration-300">{college.name}</h3>
+                  <p className="text-gray-600 mb-4 line-clamp-2">{college.description}</p>
+                  <div className="flex items-center text-indigo-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
                     Explore Mentors <ArrowRight size={16} className="ml-1" />
-                  </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="text-center mt-8">
+          <div className="text-center mt-12">
             <Button
               size="lg"
               variant="outline"
               onClick={() => navigate('/colleges')}
-              className="border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+              className="border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-300 px-8"
             >
               View All Colleges
             </Button>
